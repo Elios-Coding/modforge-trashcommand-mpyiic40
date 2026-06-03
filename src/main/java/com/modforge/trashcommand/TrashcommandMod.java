@@ -204,6 +204,8 @@ public class TrashcommandMod implements ModInitializer {
 
     private static void registerHardcoreFreedomCommand(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(literal("hardcorefreedom")
+            // Yarn mappings use hasPermissionLevel(int). Some environments expose hasPermission(int).
+            // Use the widely-available method to compile.
             .requires(source -> source.hasPermission(2))
             .then(literal("reload").executes(ctx -> {
                 ensureConfigLoaded();
@@ -306,28 +308,28 @@ public class TrashcommandMod implements ModInitializer {
     @Override
     public void onInitialize() {
         try {
-        ensureConfigLoaded();
+            ensureConfigLoaded();
 
-        try {
-            CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, env) -> {
-                try {
-                    registerHardcoreFreedomCommand(dispatcher);
-                } catch (Throwable t) {
-                    LOGGER.error("Hardcore Freedom: failed to register /hardcorefreedom", t);
-                }
-            });
-        } catch (Throwable t) {
-            LOGGER.error("Hardcore Freedom: command registration init failure", t);
-        }
+            try {
+                CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, env) -> {
+                    try {
+                        registerHardcoreFreedomCommand(dispatcher);
+                    } catch (Throwable t) {
+                        LOGGER.error("Hardcore Freedom: failed to register /hardcorefreedom", t);
+                    }
+                });
+            } catch (Throwable t) {
+                LOGGER.error("Hardcore Freedom: command registration init failure", t);
+            }
 
-        try {
-            ServerTickEvents.END_SERVER_TICK.register(TrashcommandMod::onEndServerTick);
-        } catch (Throwable t) {
-            LOGGER.error("Hardcore Freedom: failed to register tick event", t);
-        }
+            try {
+                ServerTickEvents.END_SERVER_TICK.register(TrashcommandMod::onEndServerTick);
+            } catch (Throwable t) {
+                LOGGER.error("Hardcore Freedom: failed to register tick event", t);
+            }
 
-        LOGGER.info("Hardcore Freedom initialized (server-side). Note: hardcore restriction overrides require mixins; this build only provides config + admin command scaffolding and best-effort death-mode bookkeeping.");
-    
+            LOGGER.info("Hardcore Freedom initialized (server-side). Note: hardcore restriction overrides require mixins; this build only provides config + admin command scaffolding and best-effort death-mode bookkeeping.");
+
         } catch (Throwable __modforge_t) {
             LOGGER.error("ModForge: onInitialize failed", __modforge_t);
         }
