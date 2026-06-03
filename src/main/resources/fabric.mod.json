@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "trashcommand",
+  "version": "${version}",
+  "name": "TrashCommand",
+  "description": "Server-side Fabric mod for Minecraft 1.21.11 that keeps worlds flagged Hardcore while optionally overriding hardcore restrictions for difficulty/gamemode/commands/gamerules and configurable death behavior.",
+  "authors": [
+    "SspicyGamer"
+  ],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/trashcommand/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.modforge.trashcommand.TrashcommandMod"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.18.4",
+    "minecraft": "~1.21.11",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}
