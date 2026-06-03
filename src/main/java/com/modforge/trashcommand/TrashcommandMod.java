@@ -202,11 +202,26 @@ public class TrashcommandMod implements ModInitializer {
     // Commands
     // =====================
 
+    private static boolean hasPermissionCompat(ServerCommandSource source, int level) {
+        // Modern Yarn uses hasPermissionLevel(int) on ServerCommandSource.
+        // Some forks/mappings may expose hasPermission(int). Try both safely.
+        try {
+            return source.hasPermission(level);
+        } catch (Throwable ignored) {
+            try {
+                // Reflection avoids hard compile dependency on a non-existent symbol.
+                Object r = source.getClass().getMethod("hasPermission", int.class).invoke(source, level);
+                if (r instanceof Boolean b) return b;
+            } catch (Throwable ignored2) {
+                // fall through
+            }
+        }
+        return false;
+    }
+
     private static void registerHardcoreFreedomCommand(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(literal("hardcorefreedom")
-            // Yarn mappings use hasPermissionLevel(int). Some environments expose hasPermission(int).
-            // Use the widely-available method to compile.
-            .requires(source -> source.hasPermission(2))
+            .requires(source -> hasPermissionCompat(source, 2))
             .then(literal("reload").executes(ctx -> {
                 ensureConfigLoaded();
                 ctx.getSource().sendFeedback(() -> Text.literal("Hardcore Freedom: config reloaded"), true);
